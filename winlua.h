@@ -1084,7 +1084,7 @@ int impl_save_dialog(lua_State* L) {
 				//util->write_file(last, buffer);
 			}
 			if (ofn.nFilterIndex == 3) {
-				//util->write_file(ofn.lpstrFile, buffer);
+				//util->write_file(ofn.lpstrFile, buffer); //again not implemented
 			}
 		}
 		return 0;
@@ -1103,7 +1103,7 @@ int impl_exit(lua_State* L) {
 
 int impl_unload(lua_State* L) {
 	BeginUltra("unload");
-	util->close();
+	//util->close(); //this was a special function, it just unloaded everything and unloaded the module I had all of this in
 	return 0;
 	VEnd();
 }
@@ -1148,7 +1148,7 @@ Form_Control* g_control;
 
 int printf_handler(lua_State* lua_env) {
 	BeginUltra("printfhand");
-	while (true) {
+	/*while (true) {
 		if (util->printf_called) {
 			std::string message = util->latest_printf;
 			int len = SendMessageA(g_control->window, WM_GETTEXTLENGTH, NULL, NULL);
@@ -1172,7 +1172,8 @@ int printf_handler(lua_State* lua_env) {
 			util->printf_called = false;
 		}
 		Sleep(5);
-	}
+	}*/
+	//I should've just hooked. Idk why I didn't lol.
 
 	return 0;
 	VEnd();
@@ -1196,7 +1197,7 @@ int redirect_printf(lua_State* lua_env) {
 		g_control = find_control(event->event_key);
 
 		if (!xd) {
-			util->thread(printf_handler);
+			//util->thread(printf_handler);
 			xd = true;
 		}
 		return 0;
