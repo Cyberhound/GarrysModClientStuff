@@ -15,6 +15,9 @@
 
 bool loaded = false; //only set 1 time to load 2 libararys (Richedit, CommonControls)
 
+#define VBeginUltra(s) ((void)0) //I had virtual protect on this, you can put whatever you want here, it begins and ends at all functions.
+#define VEnd() ((void)0)
+
 HINSTANCE hInstance = GetModuleHandleA(NULL);
 
 #ifndef XVALUE_INCLUDED
@@ -582,6 +585,14 @@ LRESULT CALLBACK CommandExecutionProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 	case WM_KEYDOWN:
 		switch (wParam) {
 		case VK_RETURN:
+			/*
+			this is terrible code, it is messy and it is not
+			code that you should keep/use. I used this for a
+			very simple system to execute commands.
+			
+			Not too sure what does what or how it does it, I
+			used and created this a long time ago.
+			*/
 			Form_Control* control = find_control(hwnd);
 			int len = GetWindowTextLength(control->window) + 1;
 			char* buffer = new char[len];
@@ -635,6 +646,11 @@ LRESULT CALLBACK BaseWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 	}
 
 	case WM_NOTIFY: {
+		/*
+		Also, code that should probably be developed or removed.
+		This code really isnt harmful but it is used for scintilla,
+		which I never took the time to get working.
+		*/
 		Form* form = find_form(hwnd);
 		for (int i = 0; i < form->controls.size(); i++) {
 			if (form->controls.at(i)->istextbox) {
@@ -917,7 +933,7 @@ int impl_downloadurl(lua_State* L) {
 	BeginUltra("downloadurl");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_gettop(L) == 1) {
 		std::string http = lua_tostring(L, 1);
-		lua_pushstring(L, util->download_url(http.c_str()).c_str());
+		lua_pushstring(L, "download_url function not included");//util->download_url(http.c_str()).c_str()); //this was not used, but can be used for "auto-updating UIs"
 		return 1;
 	}
 	else return luaL_error(L, "download_url needs to have arguments (string : url)");
@@ -928,7 +944,7 @@ int impl_writefile(lua_State* L) {
 	BeginUltra("writefile");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_type(L, 2) == LUA_TSTRING && lua_gettop(L) == 2) {
 		std::string data_1 = lua_tostring(L, 1), data_2 = lua_tostring(L, 2);
-		util->write_file(data_1, data_2);
+		//util->write_file(data_1, data_2); //again, not included. not used either but can be used.
 		return 0;
 	}
 	else return luaL_error(L, "writefile needs to have arguments (string : path) and (string : data)");
@@ -939,7 +955,8 @@ int impl_readfile(lua_State* L) {
 	BeginUltra("readfile");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_gettop(L) == 1) {
 		std::string data_1 = lua_tostring(L, 1);
-		std::string data = util->read_file(data_1);
+		//std::string data = util->read_file(data_1);
+		std::string data = ""; //this is not included ^
 		lua_pushstring(L, data.c_str());
 		return 1;
 	}
@@ -947,7 +964,7 @@ int impl_readfile(lua_State* L) {
 	VEnd();
 }
 
-int impl_loadstring(lua_State* L) {
+int impl_loadstring(lua_State* L) { //I dont know why I did this. It is retarded.
 	BeginUltra("loadstring");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_gettop(L) == 1) {
 		std::string script = lua_tostring(L, 1);
@@ -962,7 +979,7 @@ int impl_execute_cscript(lua_State* L) {
 	BeginUltra("executecsrcitp");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_gettop(L) == 1) {
 		std::string data_1 = lua_tostring(L, 1);
-		rlua->execute_cscript(data_1);
+		//rlua->execute_cscript(data_1); //this was to parse scripts to execute for roblox
 		return 0;
 	}
 	else return luaL_error(L, "execute_cscript needs to have arguments (string : script)");
@@ -973,6 +990,8 @@ int impl_execute_script(lua_State* L) {
 	BeginUltra("executesrcitp");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_gettop(L) == 1) {
 		std::string data_1 = lua_tostring(L, 1);
+		/* //this was used to execute lua scripts, I never got working so I dumped the project no one cared anyway.
+		//I was bored and so I moved on to other games.
 		rlua->execute_script(rlua->g_L, data_1, "Cobalt v4 Script");
 		if (lua_type(L, -1) != LUA_TNIL) {
 			if (lua_tostring(L, -1) != "") {
@@ -980,6 +999,7 @@ int impl_execute_script(lua_State* L) {
 			}
 			else return 0;
 		}
+		*/
 		else return 0;
 	}
 	else return luaL_error(L, "execute_script needs to have arguments (string : script)");
@@ -990,7 +1010,7 @@ int impl_execute_command(lua_State* L) {
 	BeginUltra("execumd");
 	if (lua_type(L, 1) == LUA_TSTRING && lua_gettop(L) == 1) {
 		std::string data_1 = lua_tostring(L, 1);
-		std::string data = execute_command(data_1);
+		std::string data = ""; //execute_command(data_1); //this is used for executing commands
 		lua_pushstring(L, data.c_str());
 		return 1;
 	}
@@ -1018,7 +1038,7 @@ int impl_open_dialog(lua_State* L) {
 		ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST;
 
 		if (GetOpenFileNameA(&ofn)) {
-			std::string data = util->read_file(filename);
+			std::string data = "";//util->read_file(filename); required for actually reading the data. not implemented.
 			if (control->isscintilla)
 				SendMessage(control->window, SCI_SETTEXT, (WPARAM)"", (LPARAM)data.c_str());
 			else SetWindowTextA(control->window, data.c_str());
@@ -1056,15 +1076,15 @@ int impl_save_dialog(lua_State* L) {
 			if (ofn.nFilterIndex == 1) {
 				std::string last = ofn.lpstrFile;
 				last += ".txt";
-				util->write_file(last, buffer);
+				//util->write_file(last, buffer);
 			}
 			if (ofn.nFilterIndex == 2) {
 				std::string last = ofn.lpstrFile;
 				last += ".lua";
-				util->write_file(last, buffer);
+				//util->write_file(last, buffer);
 			}
 			if (ofn.nFilterIndex == 3) {
-				util->write_file(ofn.lpstrFile, buffer);
+				//util->write_file(ofn.lpstrFile, buffer);
 			}
 		}
 		return 0;
