@@ -1,3 +1,16 @@
+# DO NOT EVEN ATTEMPT TO USE THIS, IT IS GARBAGE.
+---
+I hate having this existing on my github
+but I want to show everyone that they have
+to start somewhere.
+
+I highly recommend you DO NOT use this, instead
+use my re-write. This is functional, yes. But this
+is absolute garbage and has a gazillion memory leaks
+because I had no idea what they were back when
+I created this.
+---
+
 Hello, so, im guessing you are wondering what this is. Probably pretty accurate.
 WinLua is a lua API/class I made, that uses WinApi to create windows/internal GUIs
 with Lua. This allows for easy easy implementation of guis, and modifying them to
